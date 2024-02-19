@@ -1,0 +1,88 @@
+version: "3.9"
+
+#networks:
+#  rmq:
+#    driver: bridge
+
+
+services:
+
+#  composer:
+#    container_name: composer_rmq
+#    build:
+#      context: .
+#      dockerfile: ./composer/Dockerfile
+#    volumes:
+#      - ./producer_1/src:/var/www/html/
+#      - ./consumer_1/src:/var/www/html/
+#    networks:
+#      - rmq
+
+
+  rabbit-mq:
+    container_name: rabbit-mq
+    build:
+      context: .
+      dockerfile: ./rabbitMQ/Dockerfile
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit disk_free_limit 2147483648
+      - RABBITMQ_CONFIG_FILES=/etc/rabbitmq/conf.d
+
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+      - ./rabbitMQ/rabbitmq.conf:/etc/rabbitmq/conf.d/rabbitmq.conf
+      - ./logs:/var/log/rabbitmq/
+
+#    volumes:
+#      - ./producer_1/src:/var/www/html/
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    hostname: steko_ua
+    restart: on-failure
+#    networks:
+#      - rmq
+
+#  producer_1:
+#    container_name: producer_1
+#    build:
+#      context: .
+#      dockerfile: ./producer_1/Dockerfile
+#    volumes:
+#      - ./producer_1/src:/var/www/html/
+#    ports:
+#      - "8081:80"
+#    networks:
+#      - rmq
+
+#  consumer_1:
+#      container_name: consumer_1
+#      build:
+#        context: .
+#        dockerfile: ./consumer_1/Dockerfile
+#      volumes:
+#        - ./consumer_1/src:/var/www/html/
+#      ports:
+#        - "8082:80"
+#      networks:
+#        - rmq
+#
+#  consumer_2:
+#    container_name: consumer_2
+#    build:
+#      context: .
+#      dockerfile: ./consumer_2/Dockerfile
+#    volumes:
+#      - ./consumer_2/src:/var/www/html/
+#    ports:
+#      - "8083:80"
+#    networks:
+#      - rmq
+
+
+
+
+
